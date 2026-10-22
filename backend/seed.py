@@ -1,0 +1,586 @@
+"""
+Script de carga inicial de dados demonstrativos (Seed) para F.O.G.O.
+Idempotente: limpa as tabelas antes de recarregar.
+Utiliza dados fictícios com coordenadas válidas concentradas na cidade de Marília, SP.
+"""
+
+from datetime import datetime, timedelta, timezone
+import json
+from app.database import engine, SessionLocal, Base
+from app.models import Equipamento, Agente, Manutencao
+
+
+def seed_database():
+    print("Iniciando carga de dados demonstrativos para Marília/SP...")
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+
+    try:
+        # Limpar tabelas para garantir idempotência
+        db.query(Manutencao).delete()
+        db.query(Agente).delete()
+        db.query(Equipamento).delete()
+        db.commit()
+
+        agora = datetime.now(timezone.utc)
+
+        # 1. Cadastro de Equipamentos em Marília/SP (Centro, Cascata, Fragata, Palmital, Santa Antonieta, Campus)
+        equipamentos_dados = [
+            # --- CENTRO (Av. Sampaio Vidal, Rua 9 de Julho, Calçadão São Luiz, Terminal Urbano) ---
+            {
+                "codigo": "RAD-CTR-001",
+                "tipo": "radar",
+                "nome": "Radar Fixo - Av. Sampaio Vidal x Rua 9 de Julho",
+                "marca": "Perkons",
+                "modelo": "SpeedEye-400",
+                "numero_serie": "PK-88219",
+                "status": "com_falha",  # Falha para gerar alerta e impacto preditivo
+                "rua": "Av. Sampaio Vidal, 450",
+                "bairro": "Centro",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17500-021",
+                "latitude": -22.2172,
+                "longitude": -49.9465,
+                "caracteristicas_json": json.dumps({"limite_velocidade_kmh": 50, "tipo_radar": "fixo_velocidade"}),
+                "ultima_telemetria_em": agora - timedelta(minutes=45),
+            },
+            {
+                "codigo": "CAM-CTR-002",
+                "tipo": "camera",
+                "nome": "Câmera Monitoramento Praça Saturnino de Brito (Prefeitura)",
+                "marca": "Axis",
+                "modelo": "Q6075-E",
+                "numero_serie": "AX-33101",
+                "status": "operacional",
+                "rua": "Praça Saturnino de Brito, s/n",
+                "bairro": "Centro",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17500-900",
+                "latitude": -22.2165,
+                "longitude": -49.9458,
+                "caracteristicas_json": json.dumps({"resolucao": "4K", "zoom_optico": "32x", "visao_noturna": True}),
+                "ultima_telemetria_em": agora - timedelta(minutes=2),
+            },
+            {
+                "codigo": "CAN-CTR-003",
+                "tipo": "cancela",
+                "nome": "Cancela Terminal Rodoviário Urbano de Marília",
+                "marca": "Came",
+                "modelo": "Gard-8",
+                "numero_serie": "CM-7718",
+                "status": "em_manutencao",
+                "rua": "Av. Brasil x Rua 9 de Julho",
+                "bairro": "Centro",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17500-011",
+                "latitude": -22.2185,
+                "longitude": -49.9482,
+                "caracteristicas_json": json.dumps({"tempo_abertura_s": 4, "controle_remoto": True}),
+                "ultima_telemetria_em": agora - timedelta(hours=3),
+            },
+            {
+                "codigo": "CAM-CTR-004",
+                "tipo": "camera",
+                "nome": "Câmera Calçadão São Luiz x Rua Prudente de Morais",
+                "marca": "Hikvision",
+                "modelo": "DarkFighter-X",
+                "numero_serie": "HK-90112",
+                "status": "operacional",
+                "rua": "Rua São Luiz, 600",
+                "bairro": "Centro",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17500-001",
+                "latitude": -22.2155,
+                "longitude": -49.9478,
+                "caracteristicas_json": json.dumps({"resolucao": "1080p", "reconhecimento_facial": True}),
+                "ultima_telemetria_em": agora - timedelta(minutes=5),
+            },
+            {
+                "codigo": "PAT-CTR-005",
+                "tipo": "patinete",
+                "nome": "Estação Micromobilidade Praça Mário Cosentino",
+                "marca": "Segway",
+                "modelo": "Ninebot Max-IoT",
+                "numero_serie": "SW-4410",
+                "status": "furtado",  # Item furtado para teste heurístico
+                "rua": "Av. Sampaio Vidal, 120",
+                "bairro": "Centro",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17500-010",
+                "latitude": -22.2140,
+                "longitude": -49.9440,
+                "caracteristicas_json": json.dumps({"bateria_percent": 12, "rastreador_ativo": False}),
+                "ultima_telemetria_em": agora - timedelta(days=2),
+            },
+
+            # --- CASCATA (Av. das Esmeraldas, Pista de Cooper, Santa Casa / HC) ---
+            {
+                "codigo": "RAD-CAS-006",
+                "tipo": "radar",
+                "nome": "Radar Av. das Esmeraldas (Pista de Cooper)",
+                "marca": "Perkons",
+                "modelo": "SpeedEye-400",
+                "numero_serie": "PK-88240",
+                "status": "operacional",
+                "rua": "Av. das Esmeraldas, 800",
+                "bairro": "Cascata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17516-000",
+                "latitude": -22.2285,
+                "longitude": -49.9325,
+                "caracteristicas_json": json.dumps({"limite_velocidade_kmh": 50, "fiscalizacao_faixa_onibus": False}),
+                "ultima_telemetria_em": agora - timedelta(minutes=1),
+            },
+            {
+                "codigo": "CAM-CAS-007",
+                "tipo": "camera",
+                "nome": "Câmera Monitoramento Hospital das Clínicas / Santa Casa",
+                "marca": "Axis",
+                "modelo": "P3245-V",
+                "numero_serie": "AX-5519",
+                "status": "operacional",
+                "rua": "Av. Vicente Ferreira, 400",
+                "bairro": "Cascata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17515-000",
+                "latitude": -22.2235,
+                "longitude": -49.9390,
+                "caracteristicas_json": json.dumps({"resolucao": "1080p", "visao_noturna": True}),
+                "ultima_telemetria_em": agora - timedelta(minutes=4),
+            },
+            {
+                "codigo": "VEI-CAS-008",
+                "tipo": "veiculo",
+                "nome": "Viatura Trânsito EMDURB Marília - Setor Leste",
+                "marca": "Renault",
+                "modelo": "Duster 4x4",
+                "numero_serie": "RN-DU-102",
+                "status": "operacional",
+                "rua": "Av. das Esmeraldas, 1500",
+                "bairro": "Cascata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17516-100",
+                "latitude": -22.2330,
+                "longitude": -49.9280,
+                "caracteristicas_json": json.dumps({"placa": "EMD-3A20", "combustivel_percent": 85}),
+                "ultima_telemetria_em": agora - timedelta(minutes=8),
+            },
+            {
+                "codigo": "BAL-CAS-009",
+                "tipo": "balanca",
+                "nome": "Balança Rodoviária Dinâmica SP-294 / Contorno",
+                "marca": "Toledo",
+                "modelo": "PesaCargas-Pro",
+                "numero_serie": "TL-2099",
+                "status": "operacional",
+                "rua": "Rodovia SP-294, km 448",
+                "bairro": "Cascata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17516-900",
+                "latitude": -22.2190,
+                "longitude": -49.9250,
+                "caracteristicas_json": json.dumps({"capacidade_maxima_ton": 80, "precisao_kg": 50}),
+                "ultima_telemetria_em": agora - timedelta(minutes=15),
+            },
+            {
+                "codigo": "RAD-CAS-010",
+                "tipo": "radar",
+                "nome": "Radar Av. Cascata",
+                "marca": "Splice",
+                "modelo": "Veloc-Master",
+                "numero_serie": "SP-3341",
+                "status": "desativado",  # Teste de desativação lógica
+                "rua": "Av. Cascata, 350",
+                "bairro": "Cascata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17515-050",
+                "latitude": -22.2245,
+                "longitude": -49.9350,
+                "caracteristicas_json": json.dumps({"motivo_desativacao": "Obras de recapeamento asfáltico"}),
+                "ultima_telemetria_em": agora - timedelta(days=15),
+            },
+
+            # --- FRAGATA (Av. Tiradentes, Av. João Ramalho, Bosque Municipal) ---
+            {
+                "codigo": "RAD-FRG-011",
+                "tipo": "radar",
+                "nome": "Radar Fixo Av. Tiradentes x Cel. José Brás",
+                "marca": "Perkons",
+                "modelo": "SpeedEye-400",
+                "numero_serie": "PK-88301",
+                "status": "operacional",
+                "rua": "Av. Tiradentes, 1200",
+                "bairro": "Fragata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17519-000",
+                "latitude": -22.2270,
+                "longitude": -49.9430,
+                "caracteristicas_json": json.dumps({"limite_velocidade_kmh": 50}),
+                "ultima_telemetria_em": agora - timedelta(minutes=3),
+            },
+            {
+                "codigo": "CAM-FRG-012",
+                "tipo": "camera",
+                "nome": "Câmera Entrada Bosque Municipal de Marília",
+                "marca": "Axis",
+                "modelo": "Q6075-E",
+                "numero_serie": "AX-7712",
+                "status": "operacional",
+                "rua": "Rua Coronel José Brás, 1000",
+                "bairro": "Fragata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17519-150",
+                "latitude": -22.2310,
+                "longitude": -49.9360,
+                "caracteristicas_json": json.dumps({"resolucao": "4K", "zoom_optico": "30x"}),
+                "ultima_telemetria_em": agora - timedelta(minutes=1),
+            },
+            {
+                "codigo": "CAN-FRG-013",
+                "tipo": "cancela",
+                "nome": "Cancela Estacionamento Bosque Municipal",
+                "marca": "Came",
+                "modelo": "Gard-4",
+                "numero_serie": "CM-4401",
+                "status": "operacional",
+                "rua": "Rua Coronel José Brás, s/n",
+                "bairro": "Fragata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17519-150",
+                "latitude": -22.2315,
+                "longitude": -49.9365,
+                "caracteristicas_json": json.dumps({"tempo_abertura_s": 3}),
+                "ultima_telemetria_em": agora - timedelta(minutes=12),
+            },
+            {
+                "codigo": "RAD-FRG-014",
+                "tipo": "radar",
+                "nome": "Radar Av. João Ramalho (Sentido Nova Marília)",
+                "marca": "Splice",
+                "modelo": "Veloc-Master",
+                "numero_serie": "SP-5502",
+                "status": "nao_instalado",  # Teste não instalado
+                "rua": "Av. João Ramalho, 1800",
+                "bairro": "Fragata",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17519-200",
+                "latitude": -22.2380,
+                "longitude": -49.9405,
+                "caracteristicas_json": json.dumps({"previsao_instalacao": "Aguardando ligação de energia"}),
+                "ultima_telemetria_em": None,
+            },
+
+            # --- PALMITAL (Av. Santo Antônio, Rua Castro Alves, Praça do Cristo) ---
+            {
+                "codigo": "RAD-PAL-015",
+                "tipo": "radar",
+                "nome": "Radar Av. Santo Antônio x Rua Bassan",
+                "marca": "Perkons",
+                "modelo": "SpeedEye-400",
+                "numero_serie": "PK-88410",
+                "status": "operacional",
+                "rua": "Av. Santo Antônio, 1400",
+                "bairro": "Palmital",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17510-000",
+                "latitude": -22.2090,
+                "longitude": -49.9530,
+                "caracteristicas_json": json.dumps({"limite_velocidade_kmh": 50, "pistas_monitoradas": 2}),
+                "ultima_telemetria_em": agora - timedelta(minutes=2),
+            },
+            {
+                "codigo": "CAM-PAL-016",
+                "tipo": "camera",
+                "nome": "Câmera Cruzamento Rua Castro Alves",
+                "marca": "Hikvision",
+                "modelo": "DarkFighter-X",
+                "numero_serie": "HK-7729",
+                "status": "operacional",
+                "rua": "Rua Castro Alves, 650",
+                "bairro": "Palmital",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17510-040",
+                "latitude": -22.2050,
+                "longitude": -49.9570,
+                "caracteristicas_json": json.dumps({"resolucao": "1080p", "ptz": True}),
+                "ultima_telemetria_em": agora - timedelta(minutes=3),
+            },
+            {
+                "codigo": "VEI-PAL-017",
+                "tipo": "veiculo",
+                "nome": "Viatura Trânsito EMDURB - Setor Norte",
+                "marca": "Honda",
+                "modelo": "NC 750X",
+                "numero_serie": "HD-NC-88",
+                "status": "operacional",
+                "rua": "Rua República, 1100",
+                "bairro": "Palmital",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17510-010",
+                "latitude": -22.2010,
+                "longitude": -49.9545,
+                "caracteristicas_json": json.dumps({"placa": "EMD-7M88", "tipo_veiculo": "motocicleta"}),
+                "ultima_telemetria_em": agora - timedelta(minutes=6),
+            },
+            {
+                "codigo": "RAD-PAL-018",
+                "tipo": "radar",
+                "nome": "Radar Fixo Praça do Cristo Redentor",
+                "marca": "Perkons",
+                "modelo": "SpeedEye-200",
+                "numero_serie": "PK-88415",
+                "status": "operacional",
+                "rua": "Av. República, 2200",
+                "bairro": "Palmital",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17510-030",
+                "latitude": -22.1980,
+                "longitude": -49.9540,
+                "caracteristicas_json": json.dumps({"limite_velocidade_kmh": 40}),
+                "ultima_telemetria_em": agora - timedelta(minutes=4),
+            },
+
+            # --- SANTA ANTONIETA & CAMPUS (Extremo Norte e Oeste) ---
+            {
+                "codigo": "RAD-STA-019",
+                "tipo": "radar",
+                "nome": "Radar Trevo Rodovia SP-294 / Av. Eliezer Rocha",
+                "marca": "Splice",
+                "modelo": "Veloc-Master",
+                "numero_serie": "SP-7714",
+                "status": "operacional",
+                "rua": "Av. Maria Fernandes Cavalari, 100",
+                "bairro": "Santa Antonieta",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17512-000",
+                "latitude": -22.1850,
+                "longitude": -49.9620,
+                "caracteristicas_json": json.dumps({"limite_velocidade_kmh": 60}),
+                "ultima_telemetria_em": agora - timedelta(minutes=7),
+            },
+            # Equipamento sem coordenadas para validar robustez do filtro do mapa (item 6.3)
+            {
+                "codigo": "OUT-CMP-020",
+                "tipo": "outro",
+                "nome": "Painel Eletrônico Reserva - Almoxarifado Central EMDURB",
+                "marca": "Dimel",
+                "modelo": "VMS-50",
+                "numero_serie": "DM-0091",
+                "status": "operacional",
+                "rua": "Av. Hygino Muzzi Filho, 1000",
+                "bairro": "Campus Universitário",
+                "cidade": "Marília",
+                "uf": "SP",
+                "cep": "17525-000",
+                "latitude": None,
+                "longitude": None,
+                "caracteristicas_json": json.dumps({"tipo_painel": "LED RGB", "armazenado_em": "Galpão Operacional"}),
+                "ultima_telemetria_em": None,
+            },
+        ]
+
+        obj_equipamentos = []
+        for eq_d in equipamentos_dados:
+            eq = Equipamento(**eq_d)
+            db.add(eq)
+            obj_equipamentos.append(eq)
+        db.commit()
+
+        # Recarregar com IDs gerados
+        for eq in obj_equipamentos:
+            db.refresh(eq)
+
+        id_por_codigo = {eq.codigo: eq.id for eq in obj_equipamentos}
+
+        # 2. Cadastro de Agentes Operacionais em Marília (EMDURB, PM, Defesa Civil, Fiscalização)
+        agentes_dados = [
+            {
+                "nome": "Carlos Mendes - Agente EMDURB 104",
+                "matricula": "EMD-10482",
+                "orgao": "EMDURB Marília",
+                "funcao": "Fiscalização de Tráfego",
+                "status": "em_servico",
+                "bairro_base": "Centro",
+                "latitude": -22.2170,
+                "longitude": -49.9460,
+            },
+            {
+                "nome": "Fernanda Ribeiro - Operadora Semafórica",
+                "matricula": "EMD-10499",
+                "orgao": "EMDURB Marília",
+                "funcao": "Coordenação Semafórica",
+                "status": "ativo",
+                "bairro_base": "Centro",
+                "latitude": -22.2160,
+                "longitude": -49.9470,
+            },
+            {
+                "nome": "Sgt. Marcos Silveira - PM Trânsito (9º BPM/I)",
+                "matricula": "PM-44012",
+                "orgao": "Polícia Militar",
+                "funcao": "Patrulhamento Viário",
+                "status": "em_servico",
+                "bairro_base": "Cascata",
+                "latitude": -22.2280,
+                "longitude": -49.9330,
+            },
+            {
+                "nome": "Aline Costa - Técnica Eletrônica",
+                "matricula": "EMD-20194",
+                "orgao": "EMDURB Marília",
+                "funcao": "Manutenção Eletrônica",
+                "status": "ativo",
+                "bairro_base": "Cascata",
+                "latitude": -22.2240,
+                "longitude": -49.9380,
+            },
+            {
+                "nome": "Roberto Prado - Agente Defesa Civil",
+                "matricula": "DC-77011",
+                "orgao": "Defesa Civil Marília",
+                "funcao": "Monitoramento de Riscos e Enchentes",
+                "status": "em_servico",
+                "bairro_base": "Fragata",
+                "latitude": -22.2290,
+                "longitude": -49.9410,
+            },
+            {
+                "nome": "Juliana Santos - Fiscal de Posturas",
+                "matricula": "FISC-30112",
+                "orgao": "Prefeitura de Marília",
+                "funcao": "Fiscalização Urbana",
+                "status": "indisponivel",
+                "bairro_base": "Fragata",
+                "latitude": -22.2350,
+                "longitude": -49.9390,
+            },
+            {
+                "nome": "Eduardo Ramos - Motopatrulha EMDURB",
+                "matricula": "EMD-40552",
+                "orgao": "EMDURB Marília",
+                "funcao": "Apoio Rápido Viário",
+                "status": "em_servico",
+                "bairro_base": "Palmital",
+                "latitude": -22.2060,
+                "longitude": -49.9550,
+            },
+            {
+                "nome": "Patricia Oliveira - Supervisora Regional",
+                "matricula": "EMD-55103",
+                "orgao": "EMDURB Marília",
+                "funcao": "Supervisão Operacional Norte",
+                "status": "ativo",
+                "bairro_base": "Santa Antonieta",
+                "latitude": -22.1860,
+                "longitude": -49.9610,
+            },
+        ]
+
+        for ag_d in agentes_dados:
+            ag = Agente(**ag_d)
+            db.add(ag)
+        db.commit()
+
+        # 3. Cadastro de Manutenções com vínculos coerentes em Marília
+        manutencoes_dados = [
+            # 1. Manutenção IMEDIATA aberta (RAD-CTR-001 - Centro) -> Eleva criticidade e alerta
+            {
+                "equipamento_id": id_por_codigo["RAD-CTR-001"],
+                "descricao": "Substituição emergencial do módulo de alimentação queimado após descarga atmosférica.",
+                "prioridade": "imediata",
+                "status": "aberta",
+                "data_abertura": agora - timedelta(hours=5),
+                "data_prevista": agora + timedelta(hours=4),
+                "data_conclusao": None,
+                "responsavel": "Equipe Eletrotécnica EMDURB",
+                "observacoes": "Equipamento gerando alerta crítico; tráfego na Av. Sampaio Vidal sem fiscalização de velocidade.",
+            },
+            # 2. Manutenção ATRASADA em andamento (CAN-CTR-003 - Centro)
+            {
+                "equipamento_id": id_por_codigo["CAN-CTR-003"],
+                "descricao": "Troca de braço de cancela quebrado e calibração do atuador eletromecânico.",
+                "prioridade": "alta",
+                "status": "em_andamento",
+                "data_abertura": agora - timedelta(days=2),
+                "data_prevista": agora - timedelta(hours=6),  # Prazo no passado = ATRASADA
+                "data_conclusao": None,
+                "responsavel": "Mecânica Operacional Marília",
+                "observacoes": "Peça de reposição recebida, em fase de montagem no terminal.",
+            },
+            # 3. Manutenção Aberta Média (RAD-CAS-010 - Cascata)
+            {
+                "equipamento_id": id_por_codigo["RAD-CAS-010"],
+                "descricao": "Desinstalação preventiva de sensores de laço indutivo para obras de recapeamento da via.",
+                "prioridade": "media",
+                "status": "aberta",
+                "data_abertura": agora - timedelta(days=1),
+                "data_prevista": agora + timedelta(days=3),
+                "data_conclusao": None,
+                "responsavel": "Equipe Infra EMDURB",
+                "observacoes": "Aguardando sinalização de bloqueio parcial pela equipe de trânsito.",
+            },
+            # 4. Manutenção Concluída (Histórico - CAM-CTR-002)
+            {
+                "equipamento_id": id_por_codigo["CAM-CTR-002"],
+                "descricao": "Limpeza óptica periódica da cúpula anti-reflexo e teste de giro PTZ.",
+                "prioridade": "baixa",
+                "status": "concluida",
+                "data_abertura": agora - timedelta(days=7),
+                "data_prevista": agora - timedelta(days=5),
+                "data_conclusao": agora - timedelta(days=5, hours=2),
+                "responsavel": "Técnico Silva - EMDURB",
+                "observacoes": "Lentes higienizadas e teste de foco aprovado com 100% de nitidez.",
+            },
+            # 5. Manutenção Concluída (Histórico - RAD-PAL-015)
+            {
+                "equipamento_id": id_por_codigo["RAD-PAL-015"],
+                "descricao": "Aferição e calibração metrológica anual IPEM/INMETRO.",
+                "prioridade": "media",
+                "status": "concluida",
+                "data_abertura": agora - timedelta(days=14),
+                "data_prevista": agora - timedelta(days=10),
+                "data_conclusao": agora - timedelta(days=10),
+                "responsavel": "Perkons Certificadora",
+                "observacoes": "Certificado metrológico emitido com validade de 12 meses.",
+            },
+        ]
+
+        for m_d in manutencoes_dados:
+            m = Manutencao(**m_d)
+            db.add(m)
+        db.commit()
+
+        print("Carga de dados de demonstração de Marília/SP concluída com sucesso!")
+        print(f"-> {len(equipamentos_dados)} equipamentos cadastrados.")
+        print(f"-> {len(agentes_dados)} agentes cadastrados.")
+        print(f"-> {len(manutencoes_dados)} ordens de manutenção cadastradas.")
+
+    except Exception as e:
+        db.rollback()
+        print(f"Erro ao popular banco de dados: {e}")
+        raise e
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    seed_database()

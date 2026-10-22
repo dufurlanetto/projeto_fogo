@@ -1,0 +1,90 @@
+# F.O.G.O. — Ferramenta Onisciente de Gestão e Operações
+
+> **Protótipo Demonstrativo Integrado** de gestão de equipamentos urbanos, monitoramento operacional e análise preventiva da cidade.
+
+---
+
+## 🏗️ Visão Geral da Arquitetura
+
+O sistema F.O.G.O. foi projetado como uma aplicação web única, enxuta e desacoplada, composta por:
+1. **Inventário Inteligente da Cidade**: Cadastro, consulta e gestão do ciclo de vida de equipamentos urbanos e agentes.
+2. **Central de Operações da Cidade**: Dashboard unificado com indicadores de disponibilidade, visualização em mapa interativo (Leaflet) e lista de alertas operacionais por severidade.
+3. **Cidade Preditiva**: Motor heurístico explicável que calcula a pontuação de atenção operacional por bairro (0 a 100), detalhando fatores contribuintes e recomendações práticas.
+
+Todas as três camadas consomem **a mesma fonte de verdade**: uma API REST em **FastAPI** conectada a um banco relacional **SQLite**.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Backend**: Python 3.11+, FastAPI, SQLAlchemy 2.x, Pydantic V2, SQLite.
+- **Frontend**: React, TypeScript, Vite, React Router, Leaflet / React-Leaflet, Recharts, Lucide React.
+- **Transparência**: Dados demonstrativos fictícios georreferenciados na cidade de Marília, SP.
+
+---
+
+## 📁 Estrutura de Diretórios
+
+```text
+fogo/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py              # Inicialização FastAPI, CORS e roteamento
+│   │   ├── database.py          # Conexão SQLAlchemy, sessão e Foreign Keys SQLite
+│   │   ├── models.py            # Modelos: Equipamento, Agente, Manutencao
+│   │   ├── schemas.py           # Schemas Pydantic e validações
+│   │   ├── routers/             # Rotas organizadas por módulo (/api/...)
+│   │   │   ├── equipamentos.py
+│   │   │   ├── agentes.py
+│   │   │   ├── manutencoes.py
+│   │   │   ├── operacoes.py
+│   │   │   └── preditivo.py
+│   │   └── services/            # Lógica de negócio desacoplada
+│   │       ├── indicadores.py   # Cálculo de resumo, KPIs e alertas
+│   │       └── risco.py         # Heurística explicável de atenção operacional
+│   ├── seed.py                  # Carga de dados de demonstração (idempotente)
+│   └── requirements.txt
+└── frontend/
+    └── src/
+        ├── api/
+        │   └── client.ts        # Cliente HTTP centralizado (GET/POST/PATCH/DELETE)
+        ├── types/
+        │   └── index.ts         # Contratos e tipos TypeScript
+        └── ...
+```
+
+---
+
+## 🚀 Como Executar
+
+### 1. Backend (FastAPI + SQLite)
+
+A partir da pasta `backend`:
+
+```powershell
+# 1. Ativar ambiente virtual
+.\.venv\Scripts\Activate.ps1
+
+# 2. Popular o banco com dados de teste demonstrativos (idempotente)
+python seed.py
+
+# 3. Iniciar o servidor com reload automático
+uvicorn app.main:app --reload --port 8000
+```
+
+- Documentação Swagger interativa: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Health check: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+
+---
+
+### 2. Frontend (React + Vite + TypeScript)
+
+A partir da pasta `frontend`:
+
+```bash
+npm install
+npm run dev
+```
+
+- Acesso ao frontend: [http://localhost:5173](http://localhost:5173)
