@@ -18,6 +18,22 @@ def utc_now():
     return datetime.now(timezone.utc)
 
 
+class Historico(Base):
+    __tablename__ = "historico"
+
+    id = Column(Integer, primary_key=True, index=True)
+    parecer = Column(String(150), nullable=False)
+    dt_acontecimento = Column(String, nullable=False)
+    horario_acontecimento = Column(String, nullable=False)
+    rua = Column(String(150), nullable=False)
+    bairro = Column(String(100), nullable=False)
+    cidade = Column(String(50), nullable=False)
+    uf = Column(String(2), nullable=False)
+    cep = Column(String(9), nullable=False)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+
+
 class Equipamento(Base):
     __tablename__ = "equipamentos"
 

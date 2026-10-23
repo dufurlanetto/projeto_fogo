@@ -81,6 +81,45 @@ class ManutencaoResponse(ManutencaoBase):
         from_attributes = True
 
 
+#id = Column(Integer, primary_key=True, index=True)
+#    parecer = Column(String(150), nullable=False)
+#    dt_acontecimento = Column(DateTime, nullable=False)
+#    horario_acontecimento = Column(DateTime, nullable=False)
+#    rua = Column(String(150), nullable=False)
+#    bairro = Column(String(100), nullable=False)
+#    cidade = Column(String(50), nullable=False)
+#    uf = Column(String(2), nullable=False)
+#    cep = Column(String(9), nullable=False)
+#    latitude = Column(Integer(), nullable=False)
+#    longiture = Column(Integer(), nullable=False)
+
+class HistoricoBase(BaseModel):
+    id: int
+    parecer: str
+    dt_acontecimento: str
+    horario_acontecimento: str
+    rua: str
+    bairro: str
+    cidade: str
+    uf: str
+    cep: str
+    latitude: Optional[float] = Field(None, ge=-90.0, le=90.0)
+    longitude: Optional[float] = Field(None, ge=-180.0, le=180.0)
+
+class HistoricoResponse(HistoricoBase):
+    id: int
+    parecer: str
+    dt_acontecimento: str
+    horario_acontecimento: str
+    rua: str
+    bairro: str
+    cidade: str
+    uf: str
+    cep: str
+    latitude: Optional[float] = Field(None, ge=-90.0, le=90.0)
+    longitude: Optional[float] = Field(None, ge=-180.0, le=180.0)
+
+
 # --- Schemas de Equipamento ---
 
 class EquipamentoBase(BaseModel):

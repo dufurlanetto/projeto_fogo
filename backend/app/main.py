@@ -8,6 +8,7 @@ from app.routers import (
     manutencoes,
     operacoes,
     preditivo,
+    historico
 )
 
 
@@ -43,3 +44,4 @@ app.include_router(agentes.router, prefix="/api")
 app.include_router(manutencoes.router, prefix="/api")
 app.include_router(operacoes.router, prefix="/api")
 app.include_router(preditivo.router, prefix="/api")
+app.include_router(historico.router, prefix="/api")
