@@ -1,4 +1,5 @@
 import React from "react";
+import BigBrother from "../assets/big-brother-icon.png"
 import {
   LayoutDashboard,
   MapPin,
@@ -8,6 +9,7 @@ import {
   TrendingUp,
   RefreshCw,
   Radio,
+  Eye,
 } from "lucide-react";
 
 export type TabType =
@@ -37,13 +39,9 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="app-header">
       <div className="header-inner">
         <div className="brand-section">
-          <div className="brand-badge">
-            <Radio size={15} />
-            <span>FOGO</span>
-          </div>
+          <img width={60} height={60} src={BigBrother} />
           <div className="brand-meta">
-            <span className="brand-title">Centro de Operações Urbanas</span>
-            <span className="brand-subtitle">EMDURB • Marília / SP</span>
+            <span className="brand-title">BIG BROTHER </span>
           </div>
         </div>
 
@@ -106,28 +104,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex-row items-center gap-3">
           <button
             id="btn-refresh-global"
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-md"
             onClick={onRefresh}
             title="Sincronizar dados"
           >
-            <RefreshCw size={13} className={isRefreshing ? "spin-icon" : ""} />
+            <RefreshCw size={13} strokeWidth={3} className={isRefreshing ? "spin-icon" : ""} />
             <span>Atualizar</span>
           </button>
-
-          <div
-            id="status-backend-pill"
-            className="status-pill"
-            style={{
-              color: isBackendOnline ? "var(--status-success)" : "var(--status-danger)",
-              borderColor: isBackendOnline ? "var(--status-success-border)" : "var(--status-danger-border)",
-            }}
-          >
-            <div
-              className="pulse-dot"
-              style={{ background: isBackendOnline ? "var(--status-success)" : "var(--status-danger)" }}
-            />
-            <span>{isBackendOnline ? "Serviço Operacional" : "Sem Conexão"}</span>
-          </div>
         </div>
       </div>
     </header>

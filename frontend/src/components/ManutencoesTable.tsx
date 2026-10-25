@@ -99,7 +99,7 @@ export const ManutencoesTable: React.FC<ManutencoesTableProps> = ({
       <div className="card-header">
         <h2 className="card-title">
           <ClipboardList size={16} className="text-secondary" />
-          <span>Ordens de Serviço e Manutenção</span>
+          <span style={{color: '#000'}}>Ordens de Serviço e Manutenção</span>
           <span className="badge badge-neutral">{filtered.length}</span>
         </h2>
 
@@ -115,7 +115,7 @@ export const ManutencoesTable: React.FC<ManutencoesTableProps> = ({
 
       <div className="filter-bar">
         <div style={{ position: "relative", flex: 1, minWidth: "220px" }}>
-          <Search size={14} className="text-muted" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
+          <Search size={14} className="text-muted" color="#fff" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             id="input-busca-manutencao"
             type="text"

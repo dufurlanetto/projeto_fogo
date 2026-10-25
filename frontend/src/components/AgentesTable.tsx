@@ -39,14 +39,14 @@ export const AgentesTable: React.FC<AgentesTableProps> = ({ agentes }) => {
       <div className="card-header">
         <h2 className="card-title">
           <Users size={16} className="text-secondary" />
-          <span>Equipes e Agentes de Campo</span>
+          <span style={{color: '#000'}}>Equipes e Agentes de Campo</span>
           <span className="badge badge-neutral">{filtered.length}</span>
         </h2>
       </div>
 
       <div className="filter-bar">
         <div style={{ position: "relative", flex: 1, minWidth: "220px" }}>
-          <Search size={14} className="text-muted" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
+          <Search size={14} className="text-muted" color="#fff" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             id="input-busca-agente"
             type="text"

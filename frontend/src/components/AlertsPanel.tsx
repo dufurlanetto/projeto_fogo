@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import { AlertaItem, SeveridadeAlerta } from "../types/index.ts";
 import { AlertCircle, AlertTriangle, Info, Bell, ExternalLink } from "lucide-react";
+import { useIntersectionAnimation } from "../hooks/useIntersectionAnimation.ts";
 
 interface AlertsPanelProps {
   alertas: AlertaItem[];
   onSelectEquipamento?: (codigo: string) => void;
 }
 
-export const AlertsPanel: React.FC<AlertsPanelProps> = ({
+export const AlertsPanel = forwardRef<HTMLDivElement, AlertsPanelProps>(({
   alertas,
   onSelectEquipamento,
-}) => {
+}, ref) => {
   const [filter, setFilter] = useState<"todos" | SeveridadeAlerta>("todos");
+  const elementoCallbackRef = useIntersectionAnimation(0.5); 
 
   const filteredAlertas =
     filter === "todos"
@@ -31,10 +33,10 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
 
   return (
     <div className="card" id="alerts-panel">
-      <div className="card-header">
+      <div className="card-header" style={{justifyContent: 'space-between'}}>
         <h2 className="card-title">
           <Bell size={16} className="text-secondary" />
-          <span>Fila de Ocorrências & Alertas</span>
+          <span style={{color: '#000'}}>Fila de Ocorrências & Alertas</span>
           <span className="badge badge-neutral">{alertas.length}</span>
         </h2>
 
@@ -51,18 +53,18 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
         </select>
       </div>
 
-      <div className="alert-feed">
+      <div className="alert-feed" style={{overflowX: 'hidden'}}>
         {filteredAlertas.length === 0 ? (
           <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>
             Nenhum alerta pendente nesta categoria.
           </div>
         ) : (
           filteredAlertas.map((alerta) => (
-            <div key={alerta.id} className="alert-item">
+            <div key={alerta.id} className="alert-item observar esquerda" ref={ref}>
               <div className="flex-col gap-1" style={{ flex: 1 }}>
                 <div className="flex-row items-center gap-2">
                   {getSeverityBadge(alerta.severidade)}
-                  <strong style={{ fontSize: "0.825rem", color: "#fff" }}>{alerta.titulo}</strong>
+                  <strong style={{ fontSize: "0.825rem", color: "#000" }}>{alerta.titulo}</strong>
                   {alerta.bairro && (
                     <span className="text-xs text-muted">• {alerta.bairro}</span>
                   )}
@@ -92,4 +94,6 @@ export const AlertsPanel: React.FC<AlertsPanelProps> = ({
       </div>
     </div>
   );
-};
+})
+
+AlertsPanel.displayName = 'AlertsPanel';

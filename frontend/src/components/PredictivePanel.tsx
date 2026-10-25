@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { RegiaoPreditiva, NivelAtencao } from "../types/index.ts";
+import React, { useCallback, useEffect, useState } from "react";
+import { RegiaoPreditiva, NivelAtencao, ItemMapa, AlertaItem, ResumoOperacional, Equipamento, Agente, Manutencao } from "../types/index.ts";
 import { TrendingUp, HelpCircle, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
+import { MapLeaflet } from "./MapLeaflet.tsx";
+import { fogoApi } from "../api/fogoApi.ts";
+import { AlertsPanel } from "./AlertsPanel.tsx";
 
 interface PredictivePanelProps {
   regioes: RegiaoPreditiva[];
@@ -8,6 +11,17 @@ interface PredictivePanelProps {
 
 export const PredictivePanel: React.FC<PredictivePanelProps> = ({ regioes }) => {
   const [showFormula, setShowFormula] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>();
+  const [isBackendOnline, setIsBackendOnline] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [itensMapa, setItensMapa] = useState<ItemMapa[]>([]);
+  const [resumo, setResumo] = useState<ResumoOperacional | null>(null);
+  const [alertas, setAlertas] = useState<AlertaItem[]>([]);
+  const [equipamentos, setEquipamentos] = useState<Equipamento[]>([]);
+  const [agentes, setAgentes] = useState<Agente[]>([]);
+  const [manutencoes, setManutencoes] = useState<Manutencao[]>([]);
+  const [regiooes, setRegioes] = useState<RegiaoPreditiva[]>([]);
 
   const getScoreColor = (pontuacao: number) => {
     if (pontuacao >= 75) return "var(--status-danger)";
@@ -28,6 +42,54 @@ export const PredictivePanel: React.FC<PredictivePanelProps> = ({ regioes }) => 
         return <span className="badge badge-success">Normal</span>;
     }
   };
+
+  const fetchAllData = useCallback(async (isSilent = false) => {
+      if (!isSilent) setIsRefreshing(true);
+      setErrorMessage(null);
+  
+      try {
+        await fogoApi.checkHealth();
+        setIsBackendOnline(true);
+  
+        const [
+          resumoData,
+          alertasData,
+          mapaData,
+          equipData,
+          agentesData,
+          manutData,
+          regioesData,
+        ] = await Promise.all([
+          fogoApi.getResumo(),
+          fogoApi.getAlertas(),
+          fogoApi.getItensMapa(),
+          fogoApi.getEquipamentos(),
+          fogoApi.getAgentes(),
+          fogoApi.getManutencoes(),
+          fogoApi.getRegioesPreditivas(),
+        ])
+          setResumo(resumoData);
+          setAlertas(alertasData);
+          setItensMapa(mapaData);
+          setEquipamentos(equipData);
+          setAgentes(agentesData);
+          setManutencoes(manutData);
+          setRegioes(regioesData);
+        } catch (err: any) {
+          setIsBackendOnline(false);
+          setErrorMessage("Serviço de retaguarda indisponível em http://localhost:8000. Verifique se o processo backend está em execução.");
+        } finally {
+          setLoading(false);
+          setIsRefreshing(false);
+        }
+      }, []);
+
+      useEffect(() => {
+        fetchAllData();
+        const interval = setInterval(() => fetchAllData(true), 30000);
+        return () => clearInterval(interval);
+      }, [fetchAllData]);
+  
 
   return (
     <div className="flex-col gap-4" id="cidade-preditiva-container">
@@ -53,6 +115,10 @@ export const PredictivePanel: React.FC<PredictivePanelProps> = ({ regioes }) => 
             {showFormula ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
           </button>
         </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "1.25rem", marginTop: '25px' }}>
+          <MapLeaflet items={itensMapa}/>
+        </div>  
 
         {showFormula && (
           <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid var(--border-subtle)" }}>
@@ -100,7 +166,7 @@ export const PredictivePanel: React.FC<PredictivePanelProps> = ({ regioes }) => 
                 </div>
               </div>
 
-              <div style={{ background: "#0a0f1a", padding: "0.65rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--border-subtle)" }}>
+              <div style={{ background: "#fff", padding: "0.65rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--border-subtle)" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.35rem", fontSize: "0.75rem" }}>
                   <span className="text-secondary">• Falhas: <strong>{reg.fatores.equipamentos_falha}</strong></span>
                   <span className="text-secondary">• O.S. Imediatas: <strong>{reg.fatores.manutencoes_imediatas}</strong></span>
@@ -128,4 +194,4 @@ export const PredictivePanel: React.FC<PredictivePanelProps> = ({ regioes }) => 
       </div>
     </div>
   );
-};
+}

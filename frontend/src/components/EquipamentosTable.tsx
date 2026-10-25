@@ -126,7 +126,7 @@ export const EquipamentosTable: React.FC<EquipamentosTableProps> = ({
       <div className="card-header">
         <h2 className="card-title">
           <Cpu size={16} className="text-secondary" />
-          <span>Inventário de Dispositivos e Sensores</span>
+          <span style={{color: '#000'}}>Inventário de Dispositivos e Sensores</span>
           <span className="badge badge-neutral">{filtered.length}</span>
         </h2>
 
@@ -142,7 +142,7 @@ export const EquipamentosTable: React.FC<EquipamentosTableProps> = ({
 
       <div className="filter-bar">
         <div style={{ position: "relative", flex: 1, minWidth: "220px" }}>
-          <Search size={14} className="text-muted" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
+          <Search size={14} className="text-muted" color="#fff" style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)" }} />
           <input
             id="input-busca-equipamento"
             type="text"
@@ -306,7 +306,7 @@ export const EquipamentosTable: React.FC<EquipamentosTableProps> = ({
               </div>
             </div>
 
-            <div style={{ marginBottom: "1rem", background: "var(--bg-input)", padding: "0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--border-subtle)" }}>
+            <div style={{ marginBottom: "1rem", background: "var(--bg-app)", padding: "0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--border-subtle)" }}>
               <span className="text-xs text-muted" style={{ fontWeight: 600, display: "block", marginBottom: "0.5rem" }}>
                 Alterar Estado Operacional:
               </span>
@@ -346,7 +346,7 @@ export const EquipamentosTable: React.FC<EquipamentosTableProps> = ({
                 <span className="text-xs text-muted" style={{ fontWeight: 600, display: "block", marginBottom: "0.35rem" }}>
                   Telemetria & Metadados:
                 </span>
-                <pre style={{ background: "#060910", padding: "0.65rem", borderRadius: "var(--radius-sm)", fontSize: "0.75rem", color: "var(--text-secondary)", overflowX: "auto" }}>
+                <pre style={{ background: "#c8c8ca", padding: "0.65rem", borderRadius: "var(--radius-sm)", fontSize: "0.75rem", color: "var(--text-secondary)", overflowX: "auto" }}>
                   {JSON.stringify(selectedEquipamento.caracteristicas_json, null, 2)}
                 </pre>
               </div>

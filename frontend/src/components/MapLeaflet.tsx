@@ -147,12 +147,8 @@ export const MapLeaflet: React.FC<MapLeafletProps> = ({ items }) => {
   };
 
   return (
-    <div className="card" id="map-section">
+    <div className="card" id="map-section" style={{border: 'none', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
       <div className="card-header">
-        <h2 className="card-title">
-          <MapPin size={16} className="text-secondary" />
-          <span>Mapa de Monitoramento Urbano — Marília / SP</span>
-        </h2>
 
         <div className="flex-row items-center gap-2">
           <div className="nav-tabs">

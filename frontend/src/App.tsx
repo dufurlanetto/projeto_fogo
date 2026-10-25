@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Navbar, TabType } from "./components/Navbar.tsx";
 import { KPICards } from "./components/KPICards.tsx";
 import { AlertsPanel } from "./components/AlertsPanel.tsx";
@@ -18,6 +18,7 @@ import {
   RegiaoPreditiva,
 } from "./types/index.ts";
 import { AlertTriangle, RefreshCw, TrendingUp } from "lucide-react";
+import { useIntersectionAnimation } from "./hooks/useIntersectionAnimation.ts";
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
@@ -35,6 +36,8 @@ export const App: React.FC = () => {
   const [regioes, setRegioes] = useState<RegiaoPreditiva[]>([]);
 
   const [selectedCodigoFilter, setSelectedCodigoFilter] = useState<string | null>(null);
+
+  const elementCallbackRef = useIntersectionAnimation(0.8)
 
   const fetchAllData = useCallback(async (isSilent = false) => {
     if (!isSilent) setIsRefreshing(true);
@@ -89,8 +92,11 @@ export const App: React.FC = () => {
     setActiveTab("equipamentos");
   };
 
+
   return (
     <div className="app-container">
+      <div className="overlay"/>
+
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -118,14 +124,16 @@ export const App: React.FC = () => {
         )}
 
         {activeTab === "dashboard" && (
-          <div className="fade-in flex-col gap-4">
-            <KPICards resumo={resumo} loading={loading} />
+          <div className="flex-col gap-4">
+            <KPICards resumo={resumo} loading={loading} ref={elementCallbackRef}/>
 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "1.25rem" }}>
-              <MapLeaflet items={itensMapa} />
+              
+              <div style={{height: '100%'}}><MapLeaflet items={itensMapa} /></div>
               <AlertsPanel
                 alertas={alertas}
                 onSelectEquipamento={handleSelectEquipamentoFromAlert}
+                ref={elementCallbackRef}
               />
             </div>
 
@@ -134,7 +142,7 @@ export const App: React.FC = () => {
                 <div className="card-header">
                   <h3 className="card-title">
                     <TrendingUp size={16} className="text-secondary" />
-                    <span>Regiões com Maior Atenção Operacional</span>
+                    <span style={{color: '#000'}}>Regiões com Maior Atenção Operacional</span>
                   </h3>
                   <button
                     id="btn-ver-todos-preditivo"
@@ -146,9 +154,9 @@ export const App: React.FC = () => {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.75rem" }}>
                   {regioes.slice(0, 4).map((r) => (
-                    <div key={r.bairro} className="alert-item flex-col gap-1">
+                    <div key={r.bairro} className="alert-item flex-col gap-1 observar cima" ref={elementCallbackRef}>
                       <div className="flex-row justify-between items-center" style={{ width: "100%" }}>
-                        <strong style={{ fontSize: "0.85rem", color: "#fff" }}>{r.bairro}</strong>
+                        <strong style={{ fontSize: "0.85rem", color: "#000" }}>{r.bairro}</strong>
                         <span className="badge text-xs" style={{
                           color: r.pontuacao >= 50 ? "var(--status-danger)" : "var(--status-warning)",
                           background: r.pontuacao >= 50 ? "var(--status-danger-bg)" : "var(--status-warning-bg)"

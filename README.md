@@ -1,4 +1,4 @@
-# F.O.G.O. — Ferramenta Onisciente de Gestão e Operações
+# BIG BROTHER — Ferramenta Onisciente de Gestão e Operações
 
 > **Protótipo Demonstrativo Integrado** de gestão de equipamentos urbanos, monitoramento operacional e análise preventiva da cidade.
 
@@ -6,7 +6,7 @@
 
 ## 🏗️ Visão Geral da Arquitetura
 
-O sistema F.O.G.O. foi projetado como uma aplicação web única, enxuta e desacoplada, composta por:
+O sistema BIG BROTHER foi projetado como uma aplicação web única, enxuta e desacoplada, composta por:
 1. **Inventário Inteligente da Cidade**: Cadastro, consulta e gestão do ciclo de vida de equipamentos urbanos e agentes.
 2. **Central de Operações da Cidade**: Dashboard unificado com indicadores de disponibilidade, visualização em mapa interativo (Leaflet) e lista de alertas operacionais por severidade.
 3. **Cidade Preditiva**: Motor heurístico explicável que calcula a pontuação de atenção operacional por bairro (0 a 100), detalhando fatores contribuintes e recomendações práticas.
