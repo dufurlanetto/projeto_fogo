@@ -130,3 +130,18 @@ export interface RegiaoPreditiva {
   fatores: FatoresRegiao;
   recomendacoes: string[];
 }
+
+export interface PrevisaoAcidente {
+  bairro: string;
+  parecer: string;
+  ocorrencias_historicas: number;
+  pontuacao: number;
+  nivel: NivelAtencao;
+  total_equipamentos: number;
+  equipamentos_indisponiveis: number;
+  total_agentes: number;
+  agentes_indisponiveis: number;
+  latitude: number | null;
+  longitude: number | null;
+  indice_densidade_modelo: number | null;
+}

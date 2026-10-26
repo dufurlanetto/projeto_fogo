@@ -316,3 +316,18 @@ class RegiaoPreditiva(BaseModel):
     total_equipamentos: int
     fatores: FatoresRegiao
     recomendacoes: List[str]
+
+
+class PrevisaoAcidente(BaseModel):
+    bairro: str
+    parecer: str
+    ocorrencias_historicas: int
+    pontuacao: int
+    nivel: NivelAtencao
+    total_equipamentos: int
+    equipamentos_indisponiveis: int
+    total_agentes: int
+    agentes_indisponiveis: int
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    indice_densidade_modelo: Optional[int] = None

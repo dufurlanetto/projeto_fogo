@@ -7,6 +7,7 @@ import {
   AlertaItem,
   ItemMapa,
   RegiaoPreditiva,
+  PrevisaoAcidente,
 } from "../types/index.ts";
 
 export interface EquipamentoFilters {
@@ -86,5 +87,9 @@ export const fogoApi = {
   // Cidade Preditiva
   async getRegioesPreditivas(): Promise<RegiaoPreditiva[]> {
     return apiGet<RegiaoPreditiva[]>("/preditivo/regioes");
+  },
+
+  async getPrevisoesAcidentes(): Promise<PrevisaoAcidente[]> {
+    return apiGet<PrevisaoAcidente[]>("/preditivo/acidentes");
   },
 };
